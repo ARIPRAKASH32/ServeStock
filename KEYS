@@ -1,0 +1,111 @@
+# SERVESTOCK - REQUIREMENTS & RUNNING COMMANDS (KEYS)
+
+---
+
+## 📋 System Requirements
+
+| Requirement | Minimum Version | Description |
+| :--- | :--- | :--- |
+| **Node.js** | `v18.0.0` or higher | JavaScript runtime environment |
+| **npm** | `v9.0.0` or higher | Package manager bundled with Node.js |
+| **MongoDB** | `v6.0` or higher | Database (Local server on `mongodb://localhost:27017` or Atlas cluster) |
+| **Git** | `v2.0` or higher | Version control system |
+| **Expo Go App** | Latest | Mobile testing app (Download from Android Play Store / iOS App Store) |
+| **Android ADB** *(Optional)* | `android-tools-adb` | Required for USB debugging on Android devices |
+
+---
+
+## ⚙️ Initial Project Setup Commands
+
+Run these setup commands after cloning the repository:
+
+```bash
+# 1. Clone Repository
+git clone https://github.com/ARIPRAKASH32/ServeStock.git servestock
+cd servestock
+
+# 2. Install Dependencies
+cd backend && npm install && cd ..
+cd frontend && npm install && cd ..
+cd mobile && npm install && cd ..
+
+# 3. Create Backend Environment File (.env)
+echo "PORT=5000" > backend/.env
+echo "MONGODB_URI=mongodb://localhost:27017/servestock" >> backend/.env
+echo "JWT_SECRET=your_super_secret_jwt_key_here" >> backend/.env
+echo "JWT_EXPIRES_IN=7d" >> backend/.env
+```
+
+---
+
+## 🚀 Running Commands
+
+### 1. From Project Root Directory (`/home/ariprakash/Documents/ServeStock`)
+
+| Command | Action |
+| :--- | :--- |
+| `npm run dev` | Starts Web Frontend (Vite server) |
+| `npm run dev:frontend` | Starts Web Frontend (Vite server) |
+| `npm run dev:backend` | Starts Backend Server (Nodemon + Express API on port 5000) |
+| `npm run start:mobile` | Starts Mobile App (Expo Dev Server) |
+
+---
+
+### 2. From Specific Subdirectories
+
+#### 🌐 Web Frontend (`/frontend`)
+```bash
+cd frontend
+npm run dev      # Starts Vite dev server (http://localhost:5173)
+npm run build    # Builds production bundle
+npm run preview  # Previews production build locally
+```
+
+#### ⚙️ Backend API (`/backend`)
+```bash
+cd backend
+npm run dev      # Starts development server with hot-reload (http://localhost:5000)
+npm run build    # Compiles TypeScript to JavaScript in /dist
+npm start        # Runs production build from /dist
+npm test         # Runs Jest test suite
+```
+
+#### 📱 Mobile App (`/mobile`)
+```bash
+cd mobile
+npx expo start   # Starts Expo Metro Bundler server
+npm run android  # Launches directly on Android target
+npm run ios      # Launches directly on iOS target
+npm run web      # Launches Expo web app preview
+```
+
+---
+
+## ⌨️ Expo Terminal Keyboard Shortcuts (Interactive Keys)
+
+When running the mobile app server (`npm run start:mobile` or `npx expo start`), use these keypresses:
+
+| Key | Action |
+| :--- | :--- |
+| `c` | Display QR Code to scan with Expo Go app |
+| `a` | Open app on connected Android device / emulator |
+| `w` | Open app preview in Web browser |
+| `r` | Reload the mobile application |
+| `j` | Open React Native Debugger |
+| `m` | Toggle Developer Menu on connected device |
+| `Shift + m` | Open additional Expo tools |
+| `Ctrl + C` | Stop the Expo development server |
+
+---
+
+## 🧪 Testing & Data Seeding Commands
+
+```bash
+# Run Automated Backend & Intelligence Tests
+cd backend
+npm test
+
+# Auto-Seeding:
+# The backend automatically populates test data (ingredients, purchase history, waste records)
+# via backend/src/seed.ts on server startup.
+```

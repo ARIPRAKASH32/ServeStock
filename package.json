@@ -1,0 +1,12 @@
+{
+  "name": "servestock-root",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "npm run dev --prefix frontend",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "dev:backend": "npm run dev --prefix backend",
+    "start:mobile": "npm start --prefix mobile",
+    "expo": "npx --prefix mobile expo start"
+  }
+}

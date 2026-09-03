@@ -7,6 +7,8 @@
 
 ServeStock is a full-stack platform designed to help restaurants move beyond static inventory tracking. It creates a closed operational feedback loop by connecting inventory, expiry risk, waste, financial cost, and actionable intelligence to optimize purchasing decisions.
 
+---
+
 ## 🚀 Features
 
 - **Inventory Management:** Track ingredients, stock levels, minimum stock thresholds, and purchase prices.
@@ -14,6 +16,8 @@ ServeStock is a full-stack platform designed to help restaurants move beyond sta
 - **Expiry Risk Intelligence:** Dynamically analyzes current stock against average daily consumption and upcoming expiry dates. Ingredients are automatically flagged from `SAFE` to `CRITICAL` or `EXPIRED`.
 - **Automated Purchasing Feedback:** The recommendation engine identifies ingredients with consistently high waste volume/cost and alerts managers to reduce future purchase quantities.
 - **A/B Testing Infrastructure:** Built-in capability to track user interactions and evaluate features across variants.
+
+---
 
 ## 🏗️ Architecture
 
@@ -48,14 +52,14 @@ The platform follows a clean, decoupled monorepo architecture:
 Before you begin, ensure you have the following installed on your system:
 
 - **Node.js**: v18.0.0 or higher. You can download it from [nodejs.org](https://nodejs.org/).
-- **npm**: Comes bundled with Node.js. Used for installing dependencies.
-- **MongoDB**: You need a running MongoDB database. 
-  - *Option 1 (Local)*: Install [MongoDB Community Server](https://www.mongodb.com/try/download/community) and run it locally on the default port `27017`.
-  - *Option 2 (Cloud)*: Create a free cluster on [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) and get your connection string.
-- **Git**: For version control. Download from [git-scm.com](https://git-scm.com/).
-- **Expo Go**: To run and test the mobile application on your physical phone, download the **Expo Go** app from the Apple App Store or Google Play Store.
+- **npm**: Comes bundled with Node.js.
+- **MongoDB**: Running locally on port `27017` or via MongoDB Atlas connection string.
+- **Git**: For version control.
+- **Expo Go App** *(Optional but recommended)*: Download from Google Play Store or Apple App Store to test the mobile app on a physical phone.
 
-### Installation
+---
+
+### Installation & Setup
 
 1. **Clone the repository:**
    ```bash
@@ -63,68 +67,132 @@ Before you begin, ensure you have the following installed on your system:
    cd servestock
    ```
 
-2. **Backend Setup:**
+2. **Install dependencies for all modules:**
    ```bash
-   cd backend
-   npm install
-   
-   # Create a .env file based on the environment configuration
-   echo "PORT=5000" > .env
-   echo "MONGODB_URI=mongodb://localhost:27017/servestock" >> .env
-   echo "JWT_SECRET=your_super_secret_jwt_key_here" >> .env
-   echo "JWT_EXPIRES_IN=7d" >> .env
-   
-   # Run the development server
-   npm run dev
+   # Backend
+   cd backend && npm install && cd ..
+
+   # Frontend
+   cd frontend && npm install && cd ..
+
+   # Mobile
+   cd mobile && npm install && cd ..
    ```
 
-3. **Web Frontend Setup:**
-   ```bash
-   cd frontend
-   npm install
-   
-   # Run the Vite development server
-   npm run dev
+3. **Backend Environment Setup:**
+   Create a `.env` file inside the `backend/` directory:
+   ```env
+   PORT=5000
+   MONGODB_URI=mongodb://localhost:27017/servestock
+   JWT_SECRET=your_super_secret_jwt_key_here
+   JWT_EXPIRES_IN=7d
    ```
 
-4. **Mobile App Setup:**
+---
+
+## 🚦 Running the Application
+
+You can run each module either from the **Root Directory** or from their respective **Subdirectories**.
+
+### Method 1: Running from Project Root (Recommended)
+
+| Service | Root Command |
+| :--- | :--- |
+| **Web Frontend** | `npm run dev` or `npm run dev:frontend` |
+| **Backend Server** | `npm run dev:backend` |
+| **Mobile App (Expo)** | `npm run start:mobile` |
+
+### Method 2: Running from Subdirectories
+
+- **Web Frontend:**
+  ```bash
+  cd frontend
+  npm run dev
+  ```
+
+- **Backend API:**
+  ```bash
+  cd backend
+  npm run dev
+  ```
+
+- **Mobile App:**
+  ```bash
+  cd mobile
+  npx expo start
+  ```
+
+---
+
+## 📱 Testing the Mobile App (Expo)
+
+When running `npm run start:mobile` (or `npx expo start` inside `mobile/`), Expo will open an interactive menu.
+
+### Option A: Physical Phone with Expo Go (Easiest)
+1. Install **Expo Go** on your phone from Play Store / App Store.
+2. Connect your phone to the **same Wi-Fi network** as your computer.
+3. Open Expo Go and scan the **QR code** printed in your terminal.
+
+### Option B: Physical Phone via USB (`adb`)
+1. Install `adb` on Ubuntu/Debian:
    ```bash
-   cd mobile
-   npm install
-   
-   # Start the Expo development server
-   npx expo start
+   sudo apt update && sudo apt install -y android-tools-adb
    ```
-   **To access the mobile app:**
-   - **Physical Device:** Open the **Expo Go** app on your phone and scan the QR code displayed in the terminal.
-   - **iOS Simulator:** Press `i` in the terminal (requires Xcode to be installed on macOS).
-   - **Android Emulator:** Press `a` in the terminal (requires Android Studio to be installed and an emulator running).
+2. Enable **Developer Options** and **USB Debugging** on your phone.
+3. Connect your phone via USB and ensure `adb devices` lists your device.
+4. Press `a` in the Expo terminal.
+
+### Option C: Android Emulator (Android Studio)
+1. Install [Android Studio](https://developer.android.com/studio) and set up an Android Virtual Device (AVD).
+2. Set your environment variables in `~/.bashrc`:
+   ```bash
+   export ANDROID_HOME=$HOME/Android/Sdk
+   export PATH=$PATH:$ANDROID_HOME/emulator
+   export PATH=$PATH:$ANDROID_HOME/platform-tools
+   ```
+3. Run `source ~/.bashrc` and press `a` in the Expo terminal.
+
+---
+
+## ❓ Troubleshooting & Common Errors
+
+### 1. `ENOENT: no such file or directory, open '.../package.json'`
+- **Cause:** Running `npm run dev` in the root folder before `package.json` was added, or running in an unconfigured directory.
+- **Fix:** Run commands using root convenience scripts (`npm run dev:frontend`, `npm run dev:backend`, `npm run start:mobile`) or navigate into `frontend/`, `backend/`, or `mobile/` first.
+
+### 2. `ETIMEDOUT` when running `npx expo start`
+- **Cause:** Running `npx expo start` in the root directory causes `npx` to search for Expo globally over the network.
+- **Fix:** Always start mobile from `mobile/` or run `npm run start:mobile` from the root directory.
+
+### 3. `Failed to resolve the Android SDK path` / `spawn adb ENOENT`
+- **Cause:** Pressing `a` in Expo without having Android SDK or `adb` installed.
+- **Fix:** Use **Expo Go** on your phone to scan the QR code (Option A), or install `android-tools-adb` (Option B).
+
+---
 
 ## 📊 Data Seeding & Intelligence
 
-Since ServeStock is heavily driven by data and AI recommendations, it requires realistic data to test properly. 
-
-By default, the backend runs an **In-Memory MongoDB Server** and automatically executes a **seed script** (`backend/src/seed.ts`) upon startup. This script automatically populates the system with:
+By default, the backend runs an **In-Memory MongoDB Server** and automatically executes a **seed script** (`backend/src/seed.ts`) upon startup. This script populates the system with:
 1. **Inventory Items**: A mix of safe, low-stock, and expiring ingredients.
 2. **Purchase History**: Historical purchase logs to demonstrate tracking.
 3. **Waste Records**: Realistic waste events over the past 30 days.
 
 ### How Recommendations Work
-You **do not** add recommendations manually. The ServeStock AI Engine generates them automatically in the background by analyzing the seeded data:
-- **Expiry Risk**: The engine flags ingredients as `WARNING`, `HIGH`, or `CRITICAL` based on how close they are to expiring versus their average daily usage.
-- **Purchase Adjustment**: If the engine detects high waste volume for a specific ingredient over the last 30 days, it generates a high-priority recommendation to reduce future purchase quantities.
+The ServeStock AI Engine generates recommendations automatically in the background:
+- **Expiry Risk**: Flags ingredients as `WARNING`, `HIGH`, or `CRITICAL` based on how close they are to expiring versus average daily usage.
+- **Purchase Adjustment**: Generates recommendations to reduce future purchase quantities for items with high waste volume.
 
-*Note: The current UI placeholders for "Add Ingredient" and "Record Purchase" will be fully integrated in the next development phase. For now, all data is managed via the auto-seed script.*
+---
 
 ## 🧪 Testing
 
-The backend intelligence engine and API endpoints are thoroughly tested.
-
-To run the automated test suite:
+To run the backend test suite:
 ```bash
 cd backend
 npm test
 ```
+
+---
 
 ## 📜 License
 
