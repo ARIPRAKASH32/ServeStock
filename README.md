@@ -1,3 +1,7 @@
+<div align="center">
+  <img src="./logo.png" alt="ServeStock Logo" width="200" />
+</div>
+
 # ServeStock
 **Smart Restaurant Inventory, Waste & Operations Intelligence Platform**
 
@@ -91,6 +95,10 @@ Before you begin, ensure you have the following installed on your system:
    # Start the Expo development server
    npx expo start
    ```
+   **To access the mobile app:**
+   - **Physical Device:** Open the **Expo Go** app on your phone and scan the QR code displayed in the terminal.
+   - **iOS Simulator:** Press `i` in the terminal (requires Xcode to be installed on macOS).
+   - **Android Emulator:** Press `a` in the terminal (requires Android Studio to be installed and an emulator running).
 
 ## 📊 Data Seeding & Intelligence
 
