@@ -54,9 +54,10 @@ export const analyzeExpiryAndRisk = async (restaurantId: string): Promise<Expiry
     }
 
     // Cost at risk is based on potential excess that will expire
-    const estimatedCostAtRisk = riskLevel === 'EXPIRED' ? 
-      (ingredient.quantity * ingredient.purchasePrice) : 
-      (potentialExcess * ingredient.purchasePrice);
+    const estimatedCostAtRisk = riskLevel === 'SAFE' ? 0 :
+      riskLevel === 'EXPIRED' ?
+        (ingredient.quantity * ingredient.purchasePrice) :
+        (potentialExcess * ingredient.purchasePrice);
 
     analysisList.push({
       ingredient,

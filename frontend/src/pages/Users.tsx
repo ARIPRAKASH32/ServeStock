@@ -5,6 +5,9 @@ import { useToast } from '../context/ToastContext';
 import { User as UserIcon, Shield, CheckCircle, XCircle } from 'lucide-react';
 import { Modal } from '../components/ui/Modal';
 import { AddUserForm } from '../components/AddUserForm';
+import { Input } from '../components/ui/Input';
+import { Button } from '../components/ui/Button';
+import { Alert } from '../components/ui/Alert';
 
 interface User {
   _id: string;
@@ -19,6 +22,10 @@ export function Users() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [resetUser, setResetUser] = useState<User | null>(null);
+  const [newPassword, setNewPassword] = useState('');
+  const [resetLoading, setResetLoading] = useState(false);
+  const [resetError, setResetError] = useState('');
   const { toast } = useToast();
 
   const fetchUsers = async () => {
@@ -53,6 +60,41 @@ export function Users() {
       fetchUsers();
     } catch (error) {
       toast('error', 'Failed to update user role');
+    }
+  };
+
+  const openResetPassword = (user: User) => {
+    setResetUser(user);
+    setNewPassword('');
+    setResetError('');
+  };
+
+  const closeResetPassword = () => {
+    setResetUser(null);
+    setNewPassword('');
+    setResetError('');
+  };
+
+  const handleResetPassword = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!resetUser) return;
+
+    if (newPassword.length < 6) {
+      setResetError('Password must be at least 6 characters.');
+      return;
+    }
+
+    setResetError('');
+    setResetLoading(true);
+
+    try {
+      await api.patch(`/users/${resetUser._id}/password`, { newPassword });
+      toast('success', 'Password reset successfully');
+      closeResetPassword();
+    } catch (error: any) {
+      setResetError(error.response?.data?.message || 'Failed to reset password');
+    } finally {
+      setResetLoading(false);
     }
   };
 
@@ -121,8 +163,14 @@ export function Users() {
                         {user.isActive ? 'Active' : 'Inactive'}
                       </button>
                     </td>
-                    <td className="px-6 py-4 text-indigo-600 cursor-pointer hover:underline">
-                      Reset Password
+                    <td className="px-6 py-4">
+                      <button
+                        type="button"
+                        onClick={() => openResetPassword(user)}
+                        className="text-indigo-600 hover:underline"
+                      >
+                        Reset Password
+                      </button>
                     </td>
                   </tr>
                 ))}
@@ -145,6 +193,34 @@ export function Users() {
           }}
           onCancel={() => setIsModalOpen(false)}
         />
+      </Modal>
+
+      <Modal
+        isOpen={resetUser !== null}
+        onClose={closeResetPassword}
+        title={`Reset password for ${resetUser?.name || 'user'}`}
+      >
+        <form onSubmit={handleResetPassword} className="space-y-4">
+          {resetError && <Alert variant="error">{resetError}</Alert>}
+          <Input
+            label="New Password"
+            type="password"
+            value={newPassword}
+            onChange={(event) => setNewPassword(event.target.value)}
+            minLength={6}
+            required
+            autoFocus
+            disabled={resetLoading}
+          />
+          <div className="flex justify-end gap-3 pt-4">
+            <Button type="button" variant="outline" onClick={closeResetPassword} disabled={resetLoading}>
+              Cancel
+            </Button>
+            <Button type="submit" isLoading={resetLoading}>
+              Reset Password
+            </Button>
+          </div>
+        </form>
       </Modal>
     </div>
   );
